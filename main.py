@@ -1,4 +1,3 @@
-from json.decoder import JSONDecodeError
 import requests
 
 response = requests.post("https://playground.learnqa.ru/api/get_301", allow_redirects=True)
