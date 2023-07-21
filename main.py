@@ -1,69 +1,33 @@
 import requests
+import json
+import time
 
-response = requests.post("https://playground.learnqa.ru/ajax/api/compare_query_type")
+response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job")
 
-print("POST-request without method param:\n", response.text)
+print(response.text)
 
-wrong_payload = {"method": "POST123"}
+token = json.loads(response.text)["token"]
+seconds = json.loads(response.text)["seconds"]
+print("token is :", token)
+print("sleep for ", seconds-2, " seconds")
 
-response = requests.head("https://playground.learnqa.ru/ajax/api/compare_query_type", params=wrong_payload)
+time.sleep(seconds-2)
 
-print("Wrong HEAD-request:\n", response.text)
+response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job", params={"token": token})
 
-correct_payload = {"method": "PUT"}
+print(response.text)
+if json.loads(response.text)["status"] == "Job is NOT ready":
+    print("OK")
+else:
+    print("Error")
 
-response = requests.put("https://playground.learnqa.ru/ajax/api/compare_query_type", params=correct_payload)
+print("sleep for another two seconds")
+time.sleep(2)
 
-print("Correct PUT-request:\n", response.text)
+response = requests.get("https://playground.learnqa.ru/ajax/api/longtime_job", params={"token": token})
 
-payloads = [{"method": "GET"}, {"method": "POST"}, {"method": "PUT"}, {"method": "DELETE"}, {"method": "HEAD"}]
-
-print("\nGET-request with params")
-for i in range(5):
-    response = requests.get("https://playground.learnqa.ru/ajax/api/compare_query_type", params=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nGET-request with data")
-for i in range(5):
-    response = requests.get("https://playground.learnqa.ru/ajax/api/compare_query_type", data=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nPOST-request with params")
-for i in range(5):
-    response = requests.post("https://playground.learnqa.ru/ajax/api/compare_query_type", params=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nPOST-request with data")
-for i in range(5):
-    response = requests.post("https://playground.learnqa.ru/ajax/api/compare_query_type", data=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nPUT-request with params")
-for i in range(5):
-    response = requests.put("https://playground.learnqa.ru/ajax/api/compare_query_type", params=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nPUT-request with data")
-for i in range(5):
-    response = requests.put("https://playground.learnqa.ru/ajax/api/compare_query_type", data=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nDELETE-request with params")
-for i in range(5):
-    response = requests.delete("https://playground.learnqa.ru/ajax/api/compare_query_type", params=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nDELETE-request with data")
-for i in range(5):
-    response = requests.delete("https://playground.learnqa.ru/ajax/api/compare_query_type", data=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nHEAD-request with params")
-for i in range(5):
-    response = requests.head("https://playground.learnqa.ru/ajax/api/compare_query_type", params=payloads[i])
-    print(payloads[i], " ", response.text)
-
-print("\nHEAD-request with data")
-for i in range(5):
-    response = requests.head("https://playground.learnqa.ru/ajax/api/compare_query_type", data=payloads[i])
-    print(payloads[i], " ", response.text)
+print(response.text)
+if (json.loads(response.text)["status"] == "Job is ready") & ("result" in json.loads(response.text)):
+    print("OK")
+else:
+    print("Error")
