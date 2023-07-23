@@ -1,6 +1,5 @@
 import requests
 import pytest
-import json
 
 
 class TestUserAgent():
