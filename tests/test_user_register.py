@@ -27,7 +27,8 @@ class TestUserRegister(BaseCase):
         response = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
         Assertions.assert_code_status(response, 400)
-        assert response.text == f"Users with email '{email}' already exists", f"Unexpected response text {response.text}"
+        assert response.text == f"Users with email '{email}' already exists", \
+            f"Unexpected response text {response.text}"
 
     @pytest.mark.parametrize("field", fields)
     def test_create_user_without_required_fields(self, field):
