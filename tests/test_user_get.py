@@ -32,7 +32,7 @@ class TestUserGet(BaseCase):
         expected_fields = ["username", "firstName", "lastName", "email"]
         Assertions.assert_json_has_keys(response2, expected_fields)
 
-    def test_get_user_details_auth_as_another_user(self):
+    def test_get_user_details_auth_as_different_user(self):
         base_part = "base"
         domain = "domain.com"
         random_part = datetime.now().strftime("%m%d%Y%H%M%S")
