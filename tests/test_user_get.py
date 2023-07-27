@@ -2,7 +2,6 @@ import requests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from datetime import datetime
-import pytest
 
 
 class TestUserGet(BaseCase):
@@ -33,18 +32,7 @@ class TestUserGet(BaseCase):
         Assertions.assert_json_has_keys(response2, expected_fields)
 
     def test_get_user_details_auth_as_different_user(self):
-        base_part = "base"
-        domain = "domain.com"
-        random_part = datetime.now().strftime("%m%d%Y%H%M%S")
-        email = f"{base_part}{random_part}@{domain}"
-
-        data = {
-            'password': '123',
-            'email': email,
-            'username': 'username15',
-            'firstName': 'Anatoly',
-            'lastName': 'Rich-man'
-        }
+        data = self.prepare_registration_data()
         response1 = requests.post("https://playground.learnqa.ru/api/user/", data=data)
 
         Assertions.assert_code_status(response1, 200)
