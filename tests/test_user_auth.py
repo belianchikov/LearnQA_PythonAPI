@@ -34,7 +34,6 @@ class TestAuth(BaseCase):
             "User id from auth is not equal to user id from check method"
         )
 
-
     @pytest.mark.parametrize('condition', exclude_params)
     def test_negative_auth_check(self, condition):
 
