@@ -23,7 +23,7 @@ class BaseCase:
         return response_as_dict[name]
 
     def prepare_registration_data(self, email=None):
-        if email == None:
+        if email is None:
             base_part = "base"
             domain = "domain.com"
             random_part = datetime.now().strftime("%m%d%Y%H%M%S")
