@@ -1,9 +1,13 @@
+import allure
+
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
+@allure.epic("User edit cases")
 class TestUserEdit(BaseCase):
+    @allure.description("Deleting just created user")
     def test_user_edit_just_created(self):
         # Registration
         register_data = self.prepare_registration_data()
@@ -45,6 +49,7 @@ class TestUserEdit(BaseCase):
 
         Assertions.assert_json_value_by_name(response4, "firstName", new_name, "Wrong user name after edit")
 
+    @allure.description("Trying to edit user not authorized")
     def test_user_edit_not_authorised(self):
         # Registration
         register_data = self.prepare_registration_data()
@@ -67,6 +72,7 @@ class TestUserEdit(BaseCase):
         assert response3.text == "Auth token not supplied"
         Assertions.assert_code_status(response3, 400)
 
+    @allure.description("Truing to edit user authorized as another user")
     def test_user_edit_authorised_as_another_user(self):
         # User #1 registration
         first_user_register_data = self.prepare_registration_data()
@@ -132,6 +138,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_json_value_by_name(response6, "firstName", second_user_firstname,
                                              "User name changed by request with wrong login data")
 
+    @allure.description("Trying to edit user's email to new email without @ sign")
     def test_user_edit_email_without_at_sign(self):
         # Registration
         register_data = self.prepare_registration_data()
@@ -173,6 +180,7 @@ class TestUserEdit(BaseCase):
 
         Assertions.assert_json_value_by_name(response4, "email", old_email, "Email changed for new one with no at sign")
 
+    @allure.description("Trying to edit user's firstname to new one with one character")
     def test_user_edit_short_firstname(self):
         # Registration
         register_data = self.prepare_registration_data()
@@ -207,7 +215,7 @@ class TestUserEdit(BaseCase):
                                    data={"firstName": new_first_name})
 
         Assertions.assert_code_status(response3, 400)
-        Assertions.assert_json_value_by_name(response3,"error",
+        Assertions.assert_json_value_by_name(response3, "error",
                                              "Too short value for field firstName",
                                              f"Wrong name change to short name")
 

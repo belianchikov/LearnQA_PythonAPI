@@ -1,9 +1,14 @@
+import allure
+
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 from lib.my_requests import MyRequests
 
 
+@allure.epic("User deletion cases")
 class TestUserDelete(BaseCase):
+    @allure.description("Successfully user delete")
+    @allure.testcase("https://google.com", "test case 1")
     def test_user_delete_successfully(self):
         # Registration
         register_data = self.prepare_registration_data()
@@ -16,7 +21,6 @@ class TestUserDelete(BaseCase):
         user_id = self.get_json_value(response1, "id")
         email = register_data["email"]
         password = register_data["password"]
-        print(user_id)
 
         # Login
         login_data = {
@@ -44,6 +48,8 @@ class TestUserDelete(BaseCase):
         assert response4.text == "User not found", \
             f"Unexpected text after successfully user delete. Text is '{response4.text}'"
 
+    @allure.description("Trying to delete user with id = 2")
+    @allure.step("Step #12343")
     def test_user_delete_with_id_2(self):
         # Login
         login_data = {
@@ -73,6 +79,7 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response3, 200)
         Assertions.assert_json_has_keys(response3, ["id", "username", "email", "firstName", "lastName"])
 
+    @allure.description("Trying to delete user logged as another user")
     def test_user_delete_logged_as_another_user(self):
         # User #1 registration
         first_user_register_data = self.prepare_registration_data()
