@@ -68,7 +68,7 @@ class TestUserEdit(BaseCase):
         Assertions.assert_code_status(response3, 400)
 
     def test_user_edit_authorised_as_another_user(self):
-        # User #2 registration
+        # User #1 registration
         first_user_register_data = self.prepare_registration_data()
 
         response1 = MyRequests.post("/user", data=first_user_register_data)
@@ -82,12 +82,12 @@ class TestUserEdit(BaseCase):
         # User #2 registration
         second_user_register_data = self.prepare_registration_data()
 
-        response1 = MyRequests.post("/user", data=second_user_register_data)
+        response2 = MyRequests.post("/user", data=second_user_register_data)
 
-        Assertions.assert_code_status(response1, 200)
-        Assertions.assert_json_has_key(response1, "id")
+        Assertions.assert_code_status(response2, 200)
+        Assertions.assert_json_has_key(response2, "id")
 
-        second_user_user_id = self.get_json_value(response1, "id")
+        second_user_user_id = self.get_json_value(response2, "id")
         second_user_email = second_user_register_data["email"]
         second_user_password = second_user_register_data["password"]
         second_user_firstname = second_user_register_data["firstName"]
@@ -98,10 +98,10 @@ class TestUserEdit(BaseCase):
             "password": first_user_password
         }
 
-        response2 = MyRequests.post("/user/login", data=first_user_login_data)
+        response3 = MyRequests.post("/user/login", data=first_user_login_data)
 
-        first_user_auth_sid = self.get_cookie(response2, "auth_sid")
-        first_user_token = self.get_header(response2, "x-csrf-token")
+        first_user_auth_sid = self.get_cookie(response3, "auth_sid")
+        first_user_token = self.get_header(response3, "x-csrf-token")
 
         # Second user login
         second_user_login_data = {
@@ -109,27 +109,27 @@ class TestUserEdit(BaseCase):
             "password": second_user_password
         }
 
-        response3 = MyRequests.post("/user/login", data=second_user_login_data)
+        response4 = MyRequests.post("/user/login", data=second_user_login_data)
 
-        second_user_auth_sid = self.get_cookie(response3, "auth_sid")
-        second_user_token = self.get_header(response3, "x-csrf-token")
+        second_user_auth_sid = self.get_cookie(response4, "auth_sid")
+        second_user_token = self.get_header(response4, "x-csrf-token")
 
-        # Edit second user name with first user login data
+        # Edit second username with first user login data
         new_name_for_second_user = "Is it new Name"
 
-        response4 = MyRequests.put(f"/user/{second_user_user_id}",
+        response5 = MyRequests.put(f"/user/{second_user_user_id}",
                                    headers={"x-csrf-token": first_user_token},
                                    cookies={"auth_sid": first_user_auth_sid},
                                    data={"firstName": new_name_for_second_user})
 
-        Assertions.assert_code_status(response4, 200)
+        Assertions.assert_code_status(response5, 200)
 
-        # Check second user name with second user login data
-        response5 = MyRequests.get(f"/user/{second_user_user_id}",
+        # Check second username with second user login data
+        response6 = MyRequests.get(f"/user/{second_user_user_id}",
                                    headers={"x-csrf-token": second_user_token},
                                    cookies={"auth_sid": second_user_auth_sid})
 
-        Assertions.assert_json_value_by_name(response5, "firstName", second_user_firstname,
+        Assertions.assert_json_value_by_name(response6, "firstName", second_user_firstname,
                                              "User name changed by request with wrong login data")
 
     def test_user_edit_email_without_at_sign(self):
